@@ -38,6 +38,7 @@ class View:
         # --- Sezione 2: Filtraggio ---
         # TODO
 
+
         # Sezione 3: Artefatti
         # TODO
 
