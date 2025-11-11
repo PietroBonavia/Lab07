@@ -12,40 +12,40 @@ class ArtefattoDAO:
         pass
 
     # TODO
-    cnx = ConnessioneDB.get_connection()
-    artefatti = list()
-    if  cnx is not None:
-        cursor = cnx.cursor()
-        query = """ SELECT * 
-                    FROM artefatto
-                    WHERE epoca = COALESCE(%s, epoca)
-                          and museo = COALESCE(%s, museo)"""
-        cursor.execute(query)
-        for row in cursor:
-            artefatti.append(row)
+    def get_artefatti_filtrati(self, museo= None, epoca = None):
+        cnx = ConnessioneDB.get_connection()
+        artefatti = list()
+        if  cnx is not None:
+            cursor = cnx.cursor(dictionary=True)
+            query = """ SELECT * 
+                        FROM artefatto
+                        WHERE (%s IS NULL OR museo = %s)
+                              and (%s IS NULL OR epoca = %s)"""
+            cursor.execute(query,(museo,museo,epoca,epoca))
+            for row in cursor:
+                artefatti.append(Artefatto(**row))
 
-        cursor.close()
-        cnx.close()
+            cursor.close()
+            cnx.close()
+        return artefatti
 
-    else:
-        print("Impossibile connetersi")
+    def get_epoche(self):
 
-    cnx = ConnessioneDB.get_connection()
-    epoche = list()
-    if cnx is not None:
-        cursor = cnx.cursor()
-        query2 = """ SELECT DISTINCT epoca 
-                     FROM artefatto
-                """
-        cursor.execute(query2)
-        for row in cursor:
-            epoche.append(row)
+        cnx = ConnessioneDB.get_connection()
+        epoche = list()
+        if cnx is not None:
+            cursor = cnx.cursor()
+            query2 = """ SELECT DISTINCT epoca 
+                         FROM artefatto
+                    """
+            cursor.execute(query2)
+            for row in cursor:
+                epoche.append(row[3])
 
-        cursor.close()
-        cnx.close()
+            cursor.close()
+            cnx.close()
 
-    else:
-        print("Impossibile connetersi")
+        return epoche
 
 
 
